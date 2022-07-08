@@ -65,6 +65,8 @@ class Twitch:
 		el.click()
 
 	def click_on_video(self):
+		video = self.drive.find_element(By.XPATH, '//div/a')
+		video.click()
 
 
 

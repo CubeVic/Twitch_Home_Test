@@ -10,5 +10,5 @@ browser.go_landing_page()
 browser.click_search_button()
 browser.search_for(keyword="Monster Hunter World")
 browser.switch_to_tab_channels()
-
-browser.find_user("CervelloneRe")
+browser.click_on_video()
+# browser.find_user("CervelloneRe")
