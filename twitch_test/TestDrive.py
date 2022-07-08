@@ -61,8 +61,10 @@ class Twitch:
 		# print(elements)
 		print(True if user_name in names else False)
 
-		el = self.drive.find_element(By.XPATH, "//p[@text()='Monster Hunter Rise']")
+		el = self.drive.find_element(By.XPATH, "//div[@class='Layout-sc-nxg1ff-0 cIRhsZ']")
 		el.click()
+
+	def click_on_video(self):
 
 
 
