@@ -68,6 +68,15 @@ class Twitch:
 		video = self.drive.find_element(By.XPATH, '//div/a')
 		video.click()
 
+	def click_start_watching(self):
+		try:
+			x = self.drive.find_element(By.XPATH, "//button[@aria-label='Close']")
+			x.click()
+		except:
+			pass
+
+		start= self.drive.find_element(By.XPATH,'//button/div/div[@data-a-target="tw-core-button-label-text"]')
+		start.click()
 
 
 
