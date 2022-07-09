@@ -1,7 +1,7 @@
 import time
 
 from selenium import webdriver
-from selenium.common import ElementNotInteractableException, ElementClickInterceptedException
+from selenium.common import ElementNotInteractableException, ElementClickInterceptedException, NoSuchElementException
 from selenium.webdriver import ActionChains
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
@@ -10,6 +10,8 @@ from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 from twitch_test import page_object
 from twitch_test import utils
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
 
 class Twitch:
@@ -48,10 +50,17 @@ class Twitch:
 		switch_to_channels.click()
 
 	def scroll_down(self):
-		videos = self.drive.find_elements(By.XPATH, "//a[@class='ScCoreLink-sc-udwpw5-0 hnofyY tw-link']")
+		videos = self.drive.find_elements(By.XPATH, page_object.anchor_video_list)
 		self.drive.execute_script("arguments[0].scrollIntoView();", videos[-1])
 
 	def search(self, channel):
+		element = self.drive.find_elements(By.XPATH, page_object.anchor_video_list)
+		try:
+			WebDriverWait(self.drive, 30).until(
+				EC.visibility_of(element[1])
+			)
+		except:
+			print("error")
 		creators_elements = self.drive.find_elements(By.TAG_NAME, 'h4')
 		creators_list = {i.text: i for i in creators_elements}
 		if channel in creators_list.keys():
@@ -59,8 +68,11 @@ class Twitch:
 			return True
 
 	def grap_random_channel(self):
-		channel = self.drive.find_element(By.XPATH, page_object.video_on_list)
-		self.drive.execute_script("arguments[0].click();", channel)
+		videos = self.drive.find_elements(By.XPATH, page_object.anchor_video_list)
+		WebDriverWait(self.drive, 30).until(
+			EC.visibility_of(videos[0])
+		)
+		self.drive.execute_script("arguments[0].click();", videos[1])
 
 	def scroll_down_search(self, times, channel="Miltrivd"):
 		flag = True
@@ -75,10 +87,11 @@ class Twitch:
 		if flag:
 			self.grap_random_channel()
 
-
-
-
 	def click_on_video(self, video=page_object.video_on_list):
+		video_tag = self.drive.find_element(By.XPATH, '//video')
+		WebDriverWait(self.drive, 30).until(
+			EC.visibility_of(video_tag)
+		)
 		try:
 			video = self.drive.find_element(By.XPATH, video)
 			video.click()
@@ -86,17 +99,20 @@ class Twitch:
 			print("Element cannot be click")
 
 	def close_modal(self):
+		video_tag = self.drive.find_element(By.XPATH, '//video')
+		WebDriverWait(self.drive, 30).until(
+			EC.visibility_of(video_tag)
+		)
 		try:
 			x = self.drive.find_element(By.XPATH, page_object.close_try_lightweight_twitch_modal)
 			x.click()
 
 		except AttributeError:
 			print("the modal is not present")
-
-
+		except NoSuchElementException:
+			print("the modal is not present")
 
 	def click_start_watching(self):
-
 		try:
 			start = self.drive.find_element(By.XPATH, page_object.start_streaming_button)
 			start.click()
@@ -104,8 +120,6 @@ class Twitch:
 			print("some attributes are incorrect ")
 		except ElementNotInteractableException:
 			print('the "start streaming" button is not present')
-
-
 
 	def wait_number_second(self, seconds=5):
 		time.sleep(seconds)
