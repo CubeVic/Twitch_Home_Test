@@ -1,4 +1,7 @@
+import time
+
 from selenium import webdriver
+from selenium.common import ElementNotInteractableException, ElementClickInterceptedException
 from selenium.webdriver import ActionChains
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
@@ -6,6 +9,7 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 from twitch_test import page_object
+from twitch_test import utils
 
 
 class Twitch:
@@ -18,7 +22,7 @@ class Twitch:
 		options.add_experimental_option(name="mobileEmulation", value=self.mobile_emulator)
 		drive = webdriver.Chrome(service=self.service, options=options)
 		self._drive = drive
-		self.drive.implicitly_wait(60)
+		self.drive.implicitly_wait(30)
 
 	@property
 	def drive(self):
@@ -43,40 +47,73 @@ class Twitch:
 		switch_to_channels = self.drive.find_element(By.XPATH, page_object.channels_tab)
 		switch_to_channels.click()
 
-	def find_user(self, user_name):
-		# find_first_video = self.drive.find_element(By.XPATH, "//div[@role='list']")
-		# print(find_first_video)
-		names = []
-		elements = []
-		for _ in range(2):
-			self.drive.find_element(By.XPATH, "//div[@role='list']//a").send_keys(Keys.END)
-			f = self.drive.find_elements(By.TAG_NAME, 'h4')
-			for i in f:
-				if i.text not in names:
-					names.append(i.text)
-					elements.append(i)
-				print(i.text)
-				# print(f"get the location {i.location}")
-		print(names)
-		# print(elements)
-		print(True if user_name in names else False)
+	def scroll_down(self):
+		videos = self.drive.find_elements(By.XPATH, "//a[@class='ScCoreLink-sc-udwpw5-0 hnofyY tw-link']")
+		self.drive.execute_script("arguments[0].scrollIntoView();", videos[-1])
 
-		el = self.drive.find_element(By.XPATH, "//div[@class='Layout-sc-nxg1ff-0 cIRhsZ']")
-		el.click()
+	def search(self, channel):
+		creators_elements = self.drive.find_elements(By.TAG_NAME, 'h4')
+		creators_list = {i.text: i for i in creators_elements}
+		if channel in creators_list.keys():
+			print("Found it ")
+			return True
 
-	def click_on_video(self):
-		video = self.drive.find_element(By.XPATH, '//div/a')
-		video.click()
+	def grap_random_channel(self):
+		channel = self.drive.find_element(By.XPATH, page_object.video_on_list)
+		self.drive.execute_script("arguments[0].click();", channel)
+
+	def scroll_down_search(self, times, channel="Miltrivd"):
+		flag = True
+		for _ in range(times):
+			if self.search(channel=channel):
+				user_name = utils.clean_user_name(channel).lower()
+				self.click_on_video(video=f"//a[@href='/{user_name}']")
+				flag = False
+				break
+			else:
+				self.scroll_down()
+		if flag:
+			self.grap_random_channel()
+
+
+
+
+	def click_on_video(self, video=page_object.video_on_list):
+		try:
+			video = self.drive.find_element(By.XPATH, video)
+			video.click()
+		except ElementClickInterceptedException:
+			print("Element cannot be click")
+
+	def close_modal(self):
+		try:
+			x = self.drive.find_element(By.XPATH, page_object.close_try_lightweight_twitch_modal)
+			x.click()
+
+		except AttributeError:
+			print("the modal is not present")
+
+
 
 	def click_start_watching(self):
-		try:
-			x = self.drive.find_element(By.XPATH, "//button[@aria-label='Close']")
-			x.click()
-		except:
-			pass
 
-		start= self.drive.find_element(By.XPATH,'//button/div/div[@data-a-target="tw-core-button-label-text"]')
-		start.click()
+		try:
+			start = self.drive.find_element(By.XPATH, page_object.start_streaming_button)
+			start.click()
+		except AttributeError:
+			print("some attributes are incorrect ")
+		except ElementNotInteractableException:
+			print('the "start streaming" button is not present')
+
+
+
+	def wait_number_second(self, seconds=5):
+		time.sleep(seconds)
+
+	def take_snapshot(self):
+		body = self.drive.find_element(By.XPATH, page_object.full_page)
+		current_time = utils.get_current_date()
+		body.screenshot(filename=f"{current_time}.png")
 
 
 
