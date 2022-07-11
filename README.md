@@ -29,5 +29,5 @@ It requires the follow libraries.
 10. Take snapshot.
 
 ## ScreenCast
-![ScreenCast][images/screencast.gif]
+![ScreenCast](images/screencast.gif)
 
