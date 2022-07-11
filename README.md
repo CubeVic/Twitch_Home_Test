@@ -1,14 +1,14 @@
 # Twitch Home Test
 
 ## Description 
+> By default, it uses the mobile emulator of a iPhone XR
 
 Contains three files:
 
-> By default, it uses the mobile emulator of a iPhone XR
-
 * `page_object`: A file that contain the locations and allow an easy call from the other files, it allows re-usage of the same code with minimal changes.
 * `utils`: contains extra functions that help with specific task, and they are not necessarily related with the test case.
-* `TestDrive`: The test case with a syntax easy to read.
+* `TestDrive`: The Implementation of the test case, it contains a class with the functions to execute the test case steps..
+* `main`: the steps of the test case.
 
 ## How to run 
 It requires the follow libraries.

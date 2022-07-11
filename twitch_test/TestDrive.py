@@ -143,12 +143,5 @@ class Twitch:
 		current_time = utils.get_current_date()
 		body.screenshot(filename=f"{current_time}.png")
 
-
-
-
-# user_agent_android = "Mozilla/5.0 (Linux; Android 4.2.1; en-us; Nexus 5 Build/JOP40D) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.166 Mobile Safari/535.19"
-# user_agent_iPhone = "Mozilla/5.0 (iPhone; CPU iPhone OS 10_3 like Mac OS X) AppleWebKit/602.1.50 (KHTML, like Gecko) CriOS/56.0.2924.75 Mobile/14E5239e Safari/602.1'"
-
-# search_result.screenshot("image2.png")
-#
-# browser.quit()
+	def quit(self):
+		self.drive.quit()
