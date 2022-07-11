@@ -1,18 +1,17 @@
 from twitch_test import TestDrive
-mobile_emulation = {
-    "deviceMetrics": { "width": 375, "height": 812, "pixelRatio": 3.0 },
-    "userAgent": "Mozilla/5.0 (Linux; Android 4.2.1; en-us; Nexus 5 Build/JOP40D) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.166 Mobile Safari/535.19"
-}
-# mobile_emulator={"deviceName": "iPhone XR"}
-browser = TestDrive.Twitch(mobile_emulator=mobile_emulation)
 
+# mobile_emulation = {
+#     "deviceMetrics": { "width": 375, "height": 812, "pixelRatio": 3.0 },
+#     "userAgent": "Mozilla/5.0 (Linux; Android 4.2.1; en-us; Nexus 5 Build/JOP40D) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.166 Mobile Safari/535.19"
+# }
+
+mobile_emulation = {"deviceName": "iPhone XR"}
+browser = TestDrive.Twitch(mobile_emulator=mobile_emulation)
 browser.go_landing_page()
 browser.click_search_button()
 browser.search_for(keyword="Monster Hunter World")
 browser.switch_to_tab_channels()
-# channel="不大行的幻哀音 (notgood6842)"
 browser.scroll_down_search(times=3, channel="CervelloneRe" )
-# browser.click_on_video()
 browser.close_modal()
 browser.click_start_watching()
 browser.wait_number_second()
