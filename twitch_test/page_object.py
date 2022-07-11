@@ -7,6 +7,7 @@ video_list_container = "//div[@role='list']//a"
 anchor_video_list = "//a[@class='ScCoreLink-sc-udwpw5-0 hnofyY tw-link']"
 video_on_list = '//div/a'
 close_try_lightweight_twitch_modal = "//button[@aria-label='Close']"
+# The broadcaster indicated that this channel is intended for mature audiences.
 
 start_streaming_button = '//button/div/div[@data-a-target="tw-core-button-label-text"]'
 
